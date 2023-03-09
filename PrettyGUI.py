@@ -210,6 +210,7 @@ def fileWatch():
     observer.join()
 
 def file_pull():
+#	subprocess.run("chmod 777 pull_database.py")
 	subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
 
 B=tkinter.Button(root,text="Pull Database",command= file_pull)

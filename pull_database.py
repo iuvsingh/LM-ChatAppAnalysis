@@ -21,7 +21,7 @@ while True:
 	#executable name
 	ndk_executable="copydbF"
 
-	cmd="{path_NDK} -DCMAKE_TOOLCHAIN_FILE= -DANDROID_ABI=armeabi-v7a -DANDROID_NATIVE_API_LEVEL=16 {c_code}".format(path_NDK=path_to_NDK_cmake,c_code=c_code_path)
+	cmd="cmake {path_NDK} -DCMAKE_TOOLCHAIN_FILE= -DANDROID_ABI=armeabi-v7a -DANDROID_NATIVE_API_LEVEL=16 {c_code}".format(path_NDK=path_to_NDK_cmake,c_code=c_code_path)
 	subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
 	cmd="cd {curnt_path} && make".format(curnt_path=python_directory_path)
