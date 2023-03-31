@@ -211,7 +211,7 @@ def fileWatch():
 
 def file_pull():
 	#1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
-	#subprocess.run("python3 pull_database.py")
+	#subprocess.run(["python3", "pull_database.py"])
 	
 	# 2 GNOME-TERMINAL: for linux that gnome-terminal installed. Comment out the lin 213 if using this code	
 	# Can hard code this: x-terminal-emulator
