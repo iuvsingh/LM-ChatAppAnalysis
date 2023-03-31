@@ -210,8 +210,26 @@ def fileWatch():
     observer.join()
 
 def file_pull():
-#	subprocess.run("chmod 777 pull_database.py")
-	subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
+	#1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
+	#subprocess.run("python3 pull_database.py")
+	
+	# 2 GNOME-TERMINAL: for linux that gnome-terminal installed. Comment out the lin 213 if using this code	
+	# Can hard code this: x-terminal-emulator
+	# Read the list of terminal emulators from a file
+	with open("/home/kali/Desktop/LMChat/LM-ChatAppAnalysis/terminals.txt") as f:
+	    terminals = f.read().splitlines()
+
+	# Iterate over the list of terminal emulators and check for their presence using the `which` command
+	available_terminals = []
+	for term in terminals:
+		try:
+			subprocess.run(["which", term.lower()], check=True,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
+			break
+		except subprocess.CalledProcessError:
+			pass
+	
+	cmd = "{terminal} -e sh -c \"python3 pull_database.py; bash\"".format(terminal=term)
+	subprocess.run(cmd,shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
 
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
