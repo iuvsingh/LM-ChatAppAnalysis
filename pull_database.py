@@ -14,8 +14,8 @@ while True:
 	sdcard_path="/sdcard/{pack_name}".format(pack_name=package_name)
 	
 	#Change the following as necessary
-	desktop_path="/home/kali/Desktop/"
-	path_to_NDK_cmake="/home/kali/Desktop/LM/android-ndk-r25c/build/cmake/android.toolchain.cmake"
+	desktop_path="/home/usingh_desk/Desktop/"
+	path_to_NDK_cmake="/home/usingh_desk/Desktop/LM/android-ndk-r25c/build/cmake/android.toolchain.cmake"
 	c_code_path=python_directory_path
 	
 	#executable name
@@ -27,7 +27,10 @@ while True:
 	cmd="cd {curnt_path} && make".format(curnt_path=python_directory_path)
 	subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
-	cmd="adb push {curnt_path}/{exe} {and_path}/".format(curnt_path=python_directory_path,and_path=data_lcl_tmp_path,exe=ndk_executable)
+	cmd="adb push {curnt_path}/{exe} /sdcard/".format(curnt_path=python_directory_path,and_path=data_lcl_tmp_path,exe=ndk_executable)
+	subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
+
+	cmd="adb shell \"su -c \'mv /sdcard/copydbF /data/local/tmp\'\""
 	subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
 	cmd="adb shell \"su -c \'chmod 777 {and_path}{exe}\'\"".format(and_path=data_lcl_tmp_path,exe=ndk_executable)
