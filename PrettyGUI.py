@@ -33,6 +33,8 @@ root.geometry('1280x720')
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
 
+#to get the current working directory
+python_directory_path = os.getcwd()
 
 #screen layout
 def tabLayout():
@@ -216,7 +218,8 @@ def file_pull():
 	# 2 GNOME-TERMINAL: for linux that gnome-terminal installed. Comment out the lin 213 if using this code	
 	# Can hard code this: x-terminal-emulator
 	# Read the list of terminal emulators from a file
-	with open("/home/kali/Desktop/LMChat/LM-ChatAppAnalysis/terminals.txt") as f:
+	path="{dir_py}/terminals.txt".format(dir_py=python_directory_path)
+	with open(path) as f:
 	    terminals = f.read().splitlines()
 
 	# Iterate over the list of terminal emulators and check for their presence using the `which` command
