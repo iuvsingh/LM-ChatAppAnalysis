@@ -49,3 +49,8 @@ while True:
 	
 	if decision=='n':
 		break
+
+
+#Test: 
+# test=subprocess.run("whoami",stdout=subprocess.PIPE)
+# print(test.stdout.decode("utf-8"))
