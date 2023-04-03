@@ -38,10 +38,12 @@ cmd="adb shell \"su -c \'mv /sdcard/{ndk_exe} {lcl_tmp}\'\"".format(ndk_exe=ndk_
 subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
 cmd="adb shell \"su -c \'chmod 777 {and_path}{exe}\'\"".format(and_path=data_lcl_tmp_path,exe=ndk_executable)
+print(cmd)
 subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
-
-cmd="adb shell \"su -c \'{and_path}{exe} {arg_package}\' 2>/dev/null\"".format(and_path=data_lcl_tmp_path,arg_package=package_name,exe=ndk_executable)
+#cmd="adb shell \"su -c \'{and_path}./{exe} {arg_package}\' 2>/dev/null\"".format(and_path=data_lcl_tmp_path,arg_package=package_name,exe=ndk_executable)
+cmd="adb shell \"su -c \'{and_path}./{exe} {arg_package}\'\"".format(and_path=data_lcl_tmp_path,arg_package=package_name,exe=ndk_executable)
+print(cmd)
 subprocess.run(cmd,stdout=subprocess.PIPE,shell=True)
 
 cmd="adb pull {sdcard} {desk}".format(sdcard=sdcard_path,desk=desktop_path)
