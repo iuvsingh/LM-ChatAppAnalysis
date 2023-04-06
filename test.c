@@ -9,6 +9,8 @@ const char* OLD_FILE = "/sdcard/exe_files/old_list.txt";
 const char* NEW_FILE = "/sdcard/exe_files/new_list.txt";
 const char* DIFF_FILE = "/sdcard/exe_files/diff.txt";
 
+typedef enum { false, true } bool;
+
 //prototype
 void check_or_create_dir();
 void create_list_apps();
@@ -17,7 +19,8 @@ void attachment_files();
 void print_Asterisks();
 void userInput();
 void menu_option();
-void cmp_files();
+void compare_files();
+int is_file_empty(const char *filename);
 
 void check_or_create_dir() {
     struct stat st;
@@ -41,60 +44,74 @@ void create_list_apps(){
     }
     // printf("File already exists!\n");
     system("ls /data/data > /sdcard/exe_files/new_list.txt");
-    fp_new=fopen("/sdcard/exe_files/new_list.txt", "r");
-    system("touch /sdcard/exe_files/diff.txt")
-    fp_diff=fopen("/sdcard/exe_files/diff.txt", "r");
+    system("touch /sdcard/exe_files/diff.txt");
 
-    cmp_files()
+    compare_files(NEW_FILE,OLD_FILE,DIFF_FILE);
+
+    int check = is_file_empty(DIFF_FILE);
+    if (check==0){
+        print_Asterisks();
+        printf("Following are the new packages discovered:\n\n");
+        system("cat /sdcard/exe_files/diff.txt");
+    }
+
 }
 
-void cmp_files(const char* file1, const char* file2, const char* output_file) {
-    FILE *fp1, *fp2, *out;
-    int ch1, ch2;
+int is_file_empty(const char *file_path) {
+    struct stat st;
+    if (stat(file_path, &st) != 0) {
+        return -1; // error occurred
+    }
+    return st.st_size == 0;
+}
 
+void compare_files(char *file1, char *file2, char *output_file) {
+    FILE *fp1, *fp2, *fout;
+    char line1[1024], line2[1024];
+    int line_num = 0;
+    bool change_detected = false;
+
+    // open the input files
     fp1 = fopen(file1, "r");
+    if (fp1 == NULL) {
+        printf("Error opening file %s\n", file1);
+    }
+
     fp2 = fopen(file2, "r");
-    out = fopen(output_file, "w");
-
-    if (fp1 == NULL || fp2 == NULL || out == NULL) {
-        printf("Error: Could not open file\n");
-        return;
+    if (fp2 == NULL) {
+        printf("Error opening file %s\n", file2);
     }
 
-    int line = 1, pos = 0, cmp_result = 0;
+    // open the output file
+    fout = fopen(output_file, "w");
+    if (fout == NULL) {
+        printf("Error creating file %s\n", output_file);
+    }
 
-    do {
-        ch1 = fgetc(fp1);
-        ch2 = fgetc(fp2);
+    // read from file1 and compare with file2
+    while (fgets(line1, sizeof(line1), fp1) != NULL) {
+        change_detected = false;
 
-        if (ch1 == '\n' || ch2 == '\n') {
-            if (ch1 != ch2) {
-                cmp_result = 1;
-                fprintf(out, "Line %d, Pos %d: ", line, pos);
-                if (ch1 == EOF) {
-                    fprintf(out, "%s: end of file, %s: %c\n", file1, file2, ch2);
-                } else if (ch2 == EOF) {
-                    fprintf(out, "%s: %c, %s: end of file\n", file1, ch1, file2);
-                } else {
-                    fprintf(out, "%s: %c, %s: %c\n", file1, ch1, file2, ch2);
-                }
+        // search for line1 in file2
+        while (fgets(line2, sizeof(line2), fp2) != NULL) {
+            if (strcmp(line1, line2) == 0) {
+                change_detected = true;
+                break;
             }
-            line++;
-            pos = 0;
-        } else if (ch1 != ch2) {
-            cmp_result = 1;
-            fprintf(out, "Line %d, Pos %d: %s: %c, %s: %c\n", line, pos, file1, ch1, file2, ch2);
         }
-        pos++;
-    } while (ch1 != EOF && ch2 != EOF);
 
-    if (cmp_result == 0) {
-        fprintf(out, "Files are identical\n");
+        // reset file2
+        fseek(fp2, 0, SEEK_SET);
+
+        // write line1 to output file if it doesn't match any line in file2
+        if (!change_detected) {
+            fprintf(fout, "%s", line1);
+        }
     }
-
+    // close the files
     fclose(fp1);
     fclose(fp2);
-    fclose(out);
+    fclose(fout);
 }
 
 

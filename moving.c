@@ -98,7 +98,10 @@ void check_or_create_dir(const char* dir_path) {
 //     return 0;
 // }
 
+
+
 int main(int argc, char *argv[]) {
+
     char command[100] = "cp -avr /data/data/";
     char end_command[50] = " /sdcard/";
     
