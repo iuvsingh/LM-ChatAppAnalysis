@@ -20,7 +20,7 @@ path_to_NDK_cmake="{desktop_p}/LM/android-ndk-r25c/build/cmake/android.toolchain
 ndk_executable="copydbF"
 
 #Android temp file path
-data_lcl_tmp_path="/data/local/tmp"
+data_lcl_tmp_path="/data/local/tmp/"
 
 #android sd card path
 sd_card_path="/sdcard"
@@ -45,10 +45,13 @@ def menu_check():
 
 	if user_val=="1":
 		user_path=str(input("Please provide the package name to import: "))
-		cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\"".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
+		cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
 		subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
 	elif user_val=="2":
+		user_path=str(input("Please provide the path to attachment: "))
+		cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_attach}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_attach=user_path)
+		subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
 
 def build_push_assign():
