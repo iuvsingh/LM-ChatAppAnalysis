@@ -8,19 +8,24 @@
 const char* OLD_FILE = "/sdcard/exe_files/old_list.txt";
 const char* NEW_FILE = "/sdcard/exe_files/new_list.txt";
 const char* DIFF_FILE = "/sdcard/exe_files/diff.txt";
+const char* FOLDER = "/sdcard/exe_files";
 
 typedef enum { false, true } bool;
 
 //prototype
 void check_or_create_dir(const char* dir_path);
 void create_list_apps();
-void staging_files(char* operation);
-// void attachment_files();
-void print_Asterisks();
-void userInput();
-void menu_option();
-void compare_files();
 int is_file_empty(const char *filename);
+void compare_files(char *file1, char *file2, char *output_file);
+void staging_files(char* arg1,char* arg2);
+// void attachment_files();
+// void print_Asterisks();
+void userInput(char* arg1, char* arg2);
+// void menu_option();
+void kill_process();
+
+
+
 
 void check_or_create_dir(const char* dir_path) {
     struct stat st;
@@ -45,14 +50,23 @@ void create_list_apps(){
     system("ls /data/data > /sdcard/exe_files/new_list.txt");
     system("touch /sdcard/exe_files/diff.txt");
 
-    compare_files(NEW_FILE,OLD_FILE,DIFF_FILE);
+    char *new_file = strdup(NEW_FILE);
+    char *old_file = strdup(OLD_FILE);
+    char *diff_file = strdup(DIFF_FILE);
+
+    compare_files(new_file, old_file, diff_file);
+    // compare_files(strdup(NEW_FILE),strdup(OLD_FILE),strdup(DIFF_FILE));
 
     int check = is_file_empty(DIFF_FILE);
     if (check==0){
-        print_Asterisks();
+        // print_Asterisks();
         printf("Following are the new packages discovered:\n\n");
         system("cat /sdcard/exe_files/diff.txt");
     }
+
+    free(new_file);
+    free(old_file);
+    free(diff_file);
 
 }
 
@@ -113,32 +127,34 @@ void compare_files(char *file1, char *file2, char *output_file) {
     fclose(fout);
 }
 
-void staging_files(char* operation) {
+
+
+void staging_files(char* arg1,char* arg2) {
     char input[100];
     char command[200] = "cp -avr ";
     char end_command[50] = " /sdcard/dbs_attchmnt";
 
-    if (strcmp(operation, "1") == 0) {
-        printf("Enter the application package name: ");
-        fgets(input, 100, stdin);
-        input[strcspn(input, "\n")] = '\0'; 
+    if (strcmp(arg1, "1") == 0) {
+        // printf("Enter the application package name: ");
+        // fgets(input, 100, stdin);
+        // input[strcspn(input, "\n")] = '\0'; 
 
         check_or_create_dir("/sdcard/dbs_attchmnt");
 
         strcat(command, "/data/data/");
-        strcat(command, input);
+        strcat(command, arg2);
         strcat(command, end_command);
         // printf("%s\n",command);
         system(command);
     }
-    else if (strcmp(operation, "2") == 0) {
-        printf("Enter the path to attachment (include the \'/\'): ");
-        fgets(input, 100, stdin);
-        input[strcspn(input, "\n")] = '\0'; 
+    else if (strcmp(arg1, "2") == 0) {
+        // printf("Enter the path to attachment (include the \'/\'): ");
+        // fgets(input, 100, stdin);
+        // input[strcspn(input, "\n")] = '\0'; 
 
         check_or_create_dir("/sdcard/dbs_attchmnt");
 
-        strcat(command, input);
+        strcat(command, arg2);
         strcat(command, end_command);
         // printf("%s\n",command);
         system(command);
@@ -149,95 +165,106 @@ void staging_files(char* operation) {
 }
 
 
-// void staging_files(){
+
+// void staging_files(char* arg1){
 //     char input[100];
 //     char command[100] = "cp -avr /data/data/";
-//     char end_command[50] = " /sdcard/dbs_attchmnt";
+//     char end_command[50] = " /sdcard/";
 
-//     printf("Enter the application package name: ");
-//     fgets(input, 100, stdin);
-//     input[strcspn(input, "\n")] = '\0'; 
+//     // printf("Enter the application package name: ");
+//     // fgets(input, 100, stdin);
+//     // input[strcspn(input, "\n")] = '\0'; 
 
-//     check_or_create_dir("/sdcard/dbs_attchmnt");
-
-//     strcat(command, input);
+//     strcat(command, arg1);
 //     strcat(command, end_command);
+//     // printf("%s\n\n",command);
 //     system(command);
-//     // system(command);
 // }
 
-// void attachment_files(){
+// void attachment_files(char* arg1){
 //     char input[100];
 //     char command[100] = "cp -avr ";
-//     char end_command[50] = " /sdcard/dbs_attchmnt";
+//     char end_command[50] = " /sdcard/";
 
-//     printf("Enter the path to attachment (include the \'/\'): ");
-//     fgets(input, 100, stdin);
-//     input[strcspn(input, "\n")] = '\0'; 
+//     // printf("Enter the path to attachment (include the \'/\'): ");
+//     // fgets(input, 100, stdin);
+//     // input[strcspn(input, "\n")] = '\0'; 
 
-//     check_or_create_dir("/sdcard/dbs_attchmnt");
-
-//     strcat(command, input);
+//     strcat(command, arg1);
 //     strcat(command, end_command);
+//     // printf("%s\n\n",command);
 //     system(command);
-//     // system(command);
 // }
 
-//Print asteriks to create menu
-void print_Asterisks() {
-    int i;
+// //Print asteriks to create menu
+// void print_Asterisks() {
+//     int i;
 
-    for (i = 0; i < 50; i++) {
-        printf("*");
-    }
+//     for (i = 0; i < 50; i++) {
+//         printf("*");
+//     }
 
-    printf("\n");
-}
+//     printf("\n");
+// }
 
-//Create menu
-void menu_option(){
-    print_Asterisks();
-    printf("WELCOME\n\n");
-    printf("Select an option below\n\n");
-    printf("1 - Export the database files\n");
-    printf("2 - Export the attachment\n");
-    printf("3 - View new apps\n");
-    printf("4 - Quit\n\n");
-    print_Asterisks();
-    printf("Please enter your option: ");
-}
+// //Create menu
+// void menu_option(){
+//     print_Asterisks();
+//     printf("WELCOME\n\n");
+//     printf("Select an option below\n\n");
+//     printf("1 - Export the database files\n");
+//     printf("2 - Export the attachment\n");
+//     printf("3 - View new apps\n");
+//     printf("4 - Quit\n\n");
+//     print_Asterisks();
+//     printf("Please enter your option: ");
+// }
+
 
 //Ask for user input
-void userInput() {
-    char input[100];
+void userInput(char* arg1, char* arg2) {
+    // char input[100];
     int quit = 0;
 
-    while (!quit) {
-        menu_option();
-        fgets(input, sizeof(input), stdin);
-        input[strcspn(input, "\n")] = '\0';  // remove newline character
 
-        //Quitting options
-        if (strcmp(input, "4") == 0 || strcmp(input, "q") == 0 || strcmp(input, "Q") == 0 || strcmp(input, "quit") == 0 || strcmp(input, "exit") == 0) {
-            quit = 1;
-        } else if (strcmp(input,"1")==0 || strcmp(input,"2")==0) {
-            staging_files(input);
-        }else if (strcmp(input,"3")==0) {
-            check_or_create_dir("/sdcard/exe_files");
-            create_list_apps();
-        }else if (strcmp(input, "cls") == 0 || strcmp(input, "clear") == 0){
-            system("clear");
-        }
-        else {
-            print_Asterisks();
-            printf("! Invalid Option !\n");
-        }
+    // menu_option();
+    // fgets(input, sizeof(input), stdin);
+    // input[strcspn(input, "\n")] = '\0';  // remove newline character
+
+    //Quitting options
+    if (strcmp(arg1, "4") == 0 || strcmp(arg1, "q") == 0 || strcmp(arg1, "Q") == 0 || strcmp(arg1, "quit") == 0 || strcmp(arg1, "exit") == 0) {
+        quit = 1;
+    }else if (strcmp(arg1,"1")==0 || strcmp(arg1,"2")==0) {
+        staging_files(arg1,arg2);
+
+    }else if (strcmp(arg1,"3")==0) {
+        check_or_create_dir(FOLDER);
+        create_list_apps();
+    // }else if (strcmp(arg1, "cls") == 0 || strcmp(arg1, "clear") == 0){
+    //     system("clear");
     }
-
-    printf("Exiting...\n");
+    else {
+        // print_Asterisks();
+        printf("! Invalid Option !\n");
+    }
+    
+    kill_process();
+    // printf("Exiting...\n");
 }
 
+void kill_process(){
+    char kill_copydbf[150]="killall -9 //data/local/tmp/./copydbF 2>/dev/null";
+    // char kill_perm[100]="killall -9 /data/local/tmp/./permissions";
+
+    // system(kill_perm);
+    system(kill_copydbf);
+
+}
 
 int main(int argc, char *argv[]) {
-    userInput();
+
+    //arg1 = option number, arg2 = data path
+    userInput(argv[1], argv[2]);
+
+    return 0;
 }
