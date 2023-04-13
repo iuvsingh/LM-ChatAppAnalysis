@@ -1,0 +1,9 @@
+rm -r /data/local/tmp/copydbF
+rm -r /sdcard/dbs_attchmnt
+
+rm -r /sdcard/copydbF
+
+ls /sdcard/
+ls /data/local/tmp/
+
+rm -r /sdcard/exe_files
