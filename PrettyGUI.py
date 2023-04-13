@@ -20,6 +20,7 @@ from pandastable import Table, TableModel
 import sqlite3
 import pandas as pd
 import csv
+import shutil
 
 
 
@@ -30,6 +31,17 @@ root.title('Access D3niers')
 root['background']='#003478'
 root.geometry('1280x720')
 
+######################################################
+src = '/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db'
+dst = './msgstore.db'  # Destination directory is the current directory
+
+# Change current directory to destination directory
+#os.chdir('/path/to/destination/directory')
+
+# Copy the file
+shutil.copy(src, dst)
+
+#############################################
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
 
@@ -48,7 +60,7 @@ def tabLayout():
         print(name)
         #if txt file
         if name.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db', '.csv')):#'.db',
-            if name not in previousUploads and name != 'LM.png' and name != 'GMU.png':
+            if name not in previousUploads:
                 #add name to used list
                 previousUploads.add(name)
                 tab = ttk.Frame(tabControl)
@@ -67,7 +79,7 @@ def tabLayout():
                     tab_name = name
 
                 elif name.lower().endswith('.db') or name.lower().endswith('.sqlite'):
-                    os.system("./csvV1.sh")
+                    os.system("./DB2CSV.sh")
                     continue
                 #     tab_name = name
                 #     read_from_db(name,tab, tab_name)
@@ -165,7 +177,7 @@ def fileUpdate():
 
     # iterate through each file in the directory
     for entry in os.scandir(path):
-        if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')):#'.db', 
+        if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')) or entry.name == "signalBackup":#'.db', 
             # sleep timer for databases to load and convert
             time.sleep(.1)
             # adds the file to the set
@@ -188,11 +200,12 @@ def fileWatch():
                         datefmt='%Y-%m-%d %H:%M:%S')
     # set format for displaying path
     path = os.getcwd()
-
-    # initialize logging event
+   # with open('watchdogOuput.txt', 'w') as f:
+    #    sys.stdout = f# initialize logging event
     event_handler = Event()
     # initialize logging event handler to print actions
     event_log = LoggingEventHandler()
+
 
     # initialize Observer
     observer = Observer()
@@ -208,37 +221,13 @@ def fileWatch():
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
-
+    #sys.stdout = sys.__stdout__
 def file_pull():
 	subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
 
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
 B.pack()
-
-#Setting LM and GMU logos
-imgLM = Image.open('LM.png')
-imgGMU = Image.open('GMU.png')
- 
-# Resize the image using resize() method
-resize_image = imgLM.resize((300, 40))
-ri = imgGMU.resize((50, 50))
- 
-imgLM = ImageTk.PhotoImage(resize_image)
-imgGMU = ImageTk.PhotoImage(ri)
- 
-# create label and add resize image
-label1 = Label(image=imgLM,bg='#003478')
-label1.place(relx=0.1, rely=0.0, anchor='nw')
-label1.image = imgLM
-#label1.pack()
-
-label2 = Label(image=imgGMU,bg='#003478')
-label2.place(relx=0.75, rely=0.0, anchor='ne')
-label2.image = imgGMU
-#label2.pack()
-
-
 
 # initial start button
 btn0 = tk.Button(text='Start', width=10, fg='black', highlightbackground='#003478',command=lambda: [fileUpdate(), tabLayout()])
