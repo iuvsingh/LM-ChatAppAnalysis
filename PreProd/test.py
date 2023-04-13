@@ -33,26 +33,66 @@ def print_ast():
 
 
 def menu_check():
-	print_ast()
-	print("WELCOME\n")
-	print("Select an option below")
-	print("1 - Export the database files")
-	print("2 - Export the attachment")
-	print("3 - View new apps")
-	print("4 - Quit\n")
-	print_ast()
-	user_val = str(input("Please enter your option: "))
 
-	if user_val=="1":
-		user_path=str(input("Please provide the package name to import: "))
-		cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
-		subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+	subprocess.run("mkdir {desk}/imports".format(desk=desktop_path).split())
 
-	elif user_val=="2":
-		user_path=str(input("Please provide the path to attachment: "))
-		cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_attach}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_attach=user_path)
-		subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+	while True:
+		print_ast()
+		print("WELCOME\n")
+		print("Select an option below")
+		print("1 - Export the database files (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
+		print("2 - Export the attachment (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
+		print("3 - View new apps")
+		print("4 - Quit\n")
+		print_ast()
+		user_val = str(input("Please enter your option: "))
 
+		if user_val=="1":
+			user_path=str(input("Please provide the package name to import: "))
+			cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+			print()
+
+			# TODO: Change the hardcoded stuff 
+			cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk} {desk}/imports/".format(user_pk=user_path,desk=desktop_path)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+
+			print("Successfully Imported")
+
+		elif user_val=="2":
+			user_path=str(input("Please provide the path to attachment: "))
+			cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_attach}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_attach=user_path)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+			print ()
+
+			# TODO: Change the hardcoded stuff 
+			# cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk} {desk}/imports/".format(user_pk=user_path,desk=desktop_path)
+			cmd = "adb pull {user_pk} {desk}/imports/".format(user_pk=user_path,desk=desktop_path)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+
+			print("Successfully Imported")
+
+		elif user_val=="3":
+			cmd="adb pull /sdcard/exe_files/diff.txt {desk}".format(desk=desktop_path)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+
+			print()
+			# Open the file in read mode
+			with open("{desk}/diff.txt".format(desk=desktop_path), "r") as file:
+				# Read the contents of the file and print them
+				contents = file.read()
+				print(contents)
+
+		elif user_val=="4":
+			print_ast()
+			print("Goodbye!")
+			print_ast()
+			break
+
+		else:
+			print_ast()
+			print("Invalid Input")
+			print_ast()
 
 def build_push_assign():
 	

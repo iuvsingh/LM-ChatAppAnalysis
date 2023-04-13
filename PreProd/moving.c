@@ -57,12 +57,12 @@ void create_list_apps(){
     compare_files(new_file, old_file, diff_file);
     // compare_files(strdup(NEW_FILE),strdup(OLD_FILE),strdup(DIFF_FILE));
 
-    int check = is_file_empty(DIFF_FILE);
-    if (check==0){
-        // print_Asterisks();
-        printf("Following are the new packages discovered:\n\n");
-        system("cat /sdcard/exe_files/diff.txt");
-    }
+    // int check = is_file_empty(DIFF_FILE);
+    // if (check==0){
+    //     // print_Asterisks();
+    //     printf("Following are the new packages discovered:\n\n");
+    //     system("cat /sdcard/exe_files/diff.txt");
+    // }
 
     free(new_file);
     free(old_file);
@@ -231,19 +231,22 @@ void userInput(char* arg1, char* arg2) {
     // fgets(input, sizeof(input), stdin);
     // input[strcspn(input, "\n")] = '\0';  // remove newline character
 
+    check_or_create_dir(FOLDER);
+    create_list_apps();
+
     //Quitting options
-    if (strcmp(arg1, "4") == 0 || strcmp(arg1, "q") == 0 || strcmp(arg1, "Q") == 0 || strcmp(arg1, "quit") == 0 || strcmp(arg1, "exit") == 0) {
+    if (strcmp(arg1, "3") == 0 || strcmp(arg1, "q") == 0 || strcmp(arg1, "Q") == 0 || strcmp(arg1, "quit") == 0 || strcmp(arg1, "exit") == 0) {
         quit = 1;
     }else if (strcmp(arg1,"1")==0 || strcmp(arg1,"2")==0) {
         staging_files(arg1,arg2);
-
-    }else if (strcmp(arg1,"3")==0) {
-        check_or_create_dir(FOLDER);
-        create_list_apps();
-    // }else if (strcmp(arg1, "cls") == 0 || strcmp(arg1, "clear") == 0){
-    //     system("clear");
-    }
-    else {
+    
+    // }else if (strcmp(arg1,"3")==0) {
+    //     check_or_create_dir(FOLDER);
+    //     create_list_apps();
+    // // }else if (strcmp(arg1, "cls") == 0 || strcmp(arg1, "clear") == 0){
+    // //     system("clear");
+    // }
+    }else {
         // print_Asterisks();
         printf("! Invalid Option !\n");
     }
