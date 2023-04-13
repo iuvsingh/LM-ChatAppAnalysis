@@ -25,12 +25,21 @@ data_lcl_tmp_path="/data/local/tmp/"
 #android sd card path
 sd_card_path="/sdcard"
 
+#Backup path on android for signal
+bckup_path = "/storage/emulated/0/Signal/Backups"
+
 
 def print_ast():
 	print()
 	print(50 * "*")
 	print()
 
+def check_signal(path_to_dbs):
+	# TODO: Change the hardcoded stuff 
+	cmd = "adb pull {bckup} {desk}/imports/{user_pk}".format(bckup=bckup_path,user_pk=path_to_dbs,desk=desktop_path)
+	subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+
+	print("Successfully Imported")
 
 def menu_check():
 
@@ -49,15 +58,18 @@ def menu_check():
 
 		if user_val=="1":
 			user_path=str(input("Please provide the package name to import: "))
-			cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
-			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
-			print()
+			if user_path!="org.thoughtcrime.securesms":
+				cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_pack}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_pack=user_path)
+				subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+				print()
 
-			# TODO: Change the hardcoded stuff 
-			cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk} {desk}/imports/".format(user_pk=user_path,desk=desktop_path)
-			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+				# TODO: Change the hardcoded stuff 
+				cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk}/databases {desk}/imports/{user_pk}".format(user_pk=user_path,desk=desktop_path)
+				subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
-			print("Successfully Imported")
+				print("Successfully Imported")
+			else:
+				check_signal(user_path)
 
 		elif user_val=="2":
 			user_path=str(input("Please provide the path to attachment: "))

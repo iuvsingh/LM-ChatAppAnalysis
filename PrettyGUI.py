@@ -215,10 +215,10 @@ def fileWatch():
     observer.join()
 
 def file_pull():
-	#1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
-	# subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
+    #1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
+    # subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
     # subprocess.run("x-terminal-emulator -e sh -c \"python3 -u test.py; read\"".split(), shell=True)
-    os.system('x-terminal-emulator -e "python3 -u test.py; read" &')
+    os.system('x-terminal-emulator -e "python3 -u test.py; read"')
 
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
