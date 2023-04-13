@@ -96,6 +96,8 @@ def menu_check():
 				print(contents)
 
 		elif user_val=="4":
+			# cmd="adb shell su -c \"killall -9 //data/local/tmp/./copydbF\" 2>/dev/null"
+			# subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 			print_ast()
 			print("Goodbye!")
 			print_ast()

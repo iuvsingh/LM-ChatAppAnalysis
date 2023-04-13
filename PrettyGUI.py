@@ -1,6 +1,6 @@
 import os
 import os.path
-import subprocess
+import subprocess		#UV: import
 import time
 import sys
 import tkinter as tk
@@ -20,6 +20,7 @@ from pandastable import Table, TableModel
 import sqlite3
 import pandas as pd
 import csv
+import shutil
 
 
 
@@ -30,11 +31,24 @@ root.title('Access D3niers')
 root['background']='#003478'
 root.geometry('1280x720')
 
+######################################################
+src = '/home/usingh_desk/Desktop/imports/msgstore.db'
+dst = './msgstore.db'  # Destination directory is the current directory
+
+# Change current directory to destination directory
+#os.chdir('/path/to/destination/directory')
+
+# Copy the file
+# try:
+shutil.copy(src, dst)
+# except:
+# 	print("Error")
+# 	pass
+
+#############################################
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
 
-#to get the current working directory
-python_directory_path = os.getcwd()
 
 #screen layout
 def tabLayout():
@@ -50,7 +64,7 @@ def tabLayout():
         print(name)
         #if txt file
         if name.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db', '.csv')):#'.db',
-            if name not in previousUploads and name != 'LM.png' and name != 'GMU.png':
+            if name not in previousUploads:
                 #add name to used list
                 previousUploads.add(name)
                 tab = ttk.Frame(tabControl)
@@ -61,7 +75,7 @@ def tabLayout():
                     content = st.ScrolledText(tab, wrap = tk.WORD)
                     content.pack(expand = True, fill = "both")
                     #open the file and read it
-                    with open(name, 'r') as f:
+                    with open(name, 'r',encoding='ISO-8859-1') as f:
                         #reads the data
                         data = f.read()
                         #inserts data into the content window
@@ -69,7 +83,7 @@ def tabLayout():
                     tab_name = name
 
                 elif name.lower().endswith('.db') or name.lower().endswith('.sqlite'):
-                    os.system("./csvV1.sh")
+                    os.system("./DB2CSV.sh")
                     continue
                 #     tab_name = name
                 #     read_from_db(name,tab, tab_name)
@@ -163,14 +177,12 @@ def csvDisplay(filepath, tab):
 def fileUpdate():
     # set path as current directory
     path = os.getcwd()
-    # desk = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop') 
-    # subprocess.run("mkdir {desk_pth}/imports".format(desk_pth=desk).split())
-    # path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/imports/') 
+    # path = "/home/usingh_desk/Desktop/imports/"
     # os.chdir('./ScriptFiles')
 
     # iterate through each file in the directory
     for entry in os.scandir(path):
-        if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')):#'.db', 
+        if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')) or entry.name == "signalBackup":#'.db', 
             # sleep timer for databases to load and convert
             time.sleep(.1)
             # adds the file to the set
@@ -193,11 +205,12 @@ def fileWatch():
                         datefmt='%Y-%m-%d %H:%M:%S')
     # set format for displaying path
     path = os.getcwd()
-
-    # initialize logging event
+   # with open('watchdogOuput.txt', 'w') as f:
+    #    sys.stdout = f# initialize logging event
     event_handler = Event()
     # initialize logging event handler to print actions
     event_log = LoggingEventHandler()
+
 
     # initialize Observer
     observer = Observer()
@@ -208,44 +221,24 @@ def fileWatch():
     observer.start()
     try:
         while True:
-            # set the thread sleep time
+
+        # set the thread sleep time
             time.sleep(.1)
     except KeyboardInterrupt:
         observer.stop()
-    observer.join()
 
+    observer.join()
+    #sys.stdout = sys.__stdout__
 def file_pull():
     #1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
     # subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
     # subprocess.run("x-terminal-emulator -e sh -c \"python3 -u test.py; read\"".split(), shell=True)
-    os.system('x-terminal-emulator -e "python3 -u test.py; read"')
+    os.system('x-terminal-emulator -e "python3 -u test.py; read" &')
 
+    
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
 B.pack()
-
-#Setting LM and GMU logos
-imgLM = Image.open('LM.png')
-imgGMU = Image.open('GMU.png')
- 
-# Resize the image using resize() method
-resize_image = imgLM.resize((300, 40))
-ri = imgGMU.resize((50, 50))
- 
-imgLM = ImageTk.PhotoImage(resize_image)
-imgGMU = ImageTk.PhotoImage(ri)
- 
-# create label and add resize image
-label1 = Label(image=imgLM,bg='#003478')
-label1.place(relx=0.1, rely=0.0, anchor='nw')
-label1.image = imgLM
-#label1.pack()
-
-label2 = Label(image=imgGMU,bg='#003478')
-label2.place(relx=0.75, rely=0.0, anchor='ne')
-label2.image = imgGMU
-#label2.pack()
-
 
 
 # initial start button

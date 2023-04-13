@@ -1,6 +1,6 @@
 import os
 import os.path
-import subprocess		#UV: import
+import subprocess
 import time
 import sys
 import tkinter as tk
@@ -20,6 +20,7 @@ from pandastable import Table, TableModel
 import sqlite3
 import pandas as pd
 import csv
+import shutil
 
 
 
@@ -163,6 +164,9 @@ def csvDisplay(filepath, tab):
 def fileUpdate():
     # set path as current directory
     path = os.getcwd()
+    # desk = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop') 
+    # subprocess.run("mkdir {desk_pth}/imports".format(desk_pth=desk).split())
+    # path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/imports/') 
     # os.chdir('./ScriptFiles')
 
     # iterate through each file in the directory
@@ -212,29 +216,10 @@ def fileWatch():
     observer.join()
 
 def file_pull():
-	#1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
-	subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
-    # subprocess.run(["python3", "pull_database.py"])
-	
-	# 2 GNOME-TERMINAL: for linux that gnome-terminal installed. Comment out the lin 213 if using this code	
-	# Can hard code this: x-terminal-emulator
-	# Read the list of terminal emulators from a file
-	
-	# path="{dir_py}/terminals.txt".format(dir_py=python_directory_path)
-	# with open(path) as f:
-	#     terminals = f.read().splitlines()
-
-	# # Iterate over the list of terminal emulators and check for their presence using the `which` command
-	# available_terminals = []
-	# for term in terminals:
-	# 	try:
-	# 		subprocess.run(["which", term.lower()], check=True,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
-	# 		break
-	# 	except subprocess.CalledProcessError:
-	# 		pass
-	
-	# cmd = "{terminal} -e sh -c \"python3 pull_database.py; bash\"".format(terminal=term)
-	# subprocess.run(cmd,shell=True,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
+    #1 FOR MAC: For macOS run the following and comment out the line 216 (2 GNOME Terminal....) if using this code
+    # subprocess.run("gnome-terminal -x sh -c \"python3 pull_database.py; bash\"",shell=True)
+    # subprocess.run("x-terminal-emulator -e sh -c \"python3 -u test.py; read\"".split(), shell=True)
+    os.system('x-terminal-emulator -e "python3 -u test.py; read"')
 
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
