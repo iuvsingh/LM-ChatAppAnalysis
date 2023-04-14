@@ -30,7 +30,7 @@ root.title('Access D3niers')
 #set background color
 root['background']='#003478'
 root.geometry('1280x720')
-
+'''
 ######################################################
 src = '/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db'
 dst = './msgstore.db'  # Destination directory is the current directory
@@ -40,7 +40,7 @@ dst = './msgstore.db'  # Destination directory is the current directory
 
 # Copy the file
 shutil.copy(src, dst)
-
+'''
 #############################################
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
@@ -71,7 +71,7 @@ def tabLayout():
                     content = st.ScrolledText(tab, wrap = tk.WORD)
                     content.pack(expand = True, fill = "both")
                     #open the file and read it
-                    with open(name, 'r') as f:
+                    with open(name, 'r', encoding='ISO-8859-1') as f:
                         #reads the data
                         data = f.read()
                         #inserts data into the content window
@@ -113,48 +113,6 @@ uploadedFiles = set()
 # set for previous uploads to compare to
 previousUploads = set()
 
-# def db_to_csv(filename,ext = "db", tableName = "list_item"):
-#     """ inputFolder - Folder where sqlite files are located. 
-#         ext - Extension of your sqlite file (eg. db, sqlite, sqlite3 etc.)
-#         tableName - table name from which you want to select the data.
-#     """
-#     csvWriter = csv.writer(open('keep.csv', 'w', newline=''))
-#     # for file1 in os.listdir(inputFolder):
-#     #if file1.endswith('.'+ext):
-#     conn = sqlite3.connect(filename)
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM "+tableName)
-#     #df = pd.read_sql_query("SELECT *  FROM {}".format(tableName), conn)
-
-#     df.to_csv(r'{}.csv'.format(name[:-3]), index = False)
-#         #set filepath name
-#     filepath = name[:-3] + ".csv"
-#     return filepath
-
-#         #cursor = conn.cursor()
-#         #cursor.execute("SELECT * FROM "+tableName)
-#         #rows = cursor.fetchall()
-#         #for row in rows:
-#             #csvWriter.writerow(row)
-    
-
-# def read_from_db(filename, tab, tabname, table_name = "list_item"):
-#     table = Table(tab, showstatusbar=True, showtoolbar=True)
-
-    # conn = sqlite3.connect(filename)
-    # cursor=conn.cursor()
-    # data = cursor.fetchall()
-    # print(data)
-    # cursor.execute("SELECT * FROM {}".format(table_name))
-    # data = cursor.fetchall()
-    # showData = ''
-    # for data in table_name:
-    #     showData += str(data) + "\n"
-
-    # dataLabel = Label(tab, text=showData)
-    # dataLabel.grid(row=0, column=0)
-    # conn.commit()
-    # conn.close()
 
 #display the csv
 def csvDisplay(filepath, tab):
@@ -183,14 +141,23 @@ def fileUpdate():
             # adds the file to the set
             uploadedFiles.add(entry.name)
 
-# what fileWatch calls to update the tabs
-
+                
+def getFiles():
+	srcFileLst = ["/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db"] 
+	dstFileLst = ["./msgstore.db"]
+	for i in range(len(srcFileLst)):
+		if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
+			shutil.copy2(srcFileLst[i], dstFileLst[i])
+		else:
+			return None
+			
 
 class Event(LoggingEventHandler):
     def dispatch(self, event):
         fileUpdate()
+        getFiles()
         tabLayout()
-
+   
 
 # automatically update the tabs
 def fileWatch():
@@ -200,6 +167,7 @@ def fileWatch():
                         datefmt='%Y-%m-%d %H:%M:%S')
     # set format for displaying path
     path = os.getcwd()
+    path2 = "/home/kali/Desktop/Imports"
    # with open('watchdogOuput.txt', 'w') as f:
     #    sys.stdout = f# initialize logging event
     event_handler = Event()
@@ -210,6 +178,7 @@ def fileWatch():
     # initialize Observer
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
+    observer.schedule(event_handler, path2, recursive=True)
     observer.schedule(event_log, path, recursive=True)
 
     # start the observer
@@ -230,7 +199,7 @@ B.place(x=25, y=3000)
 B.pack()
 
 # initial start button
-btn0 = tk.Button(text='Start', width=10, fg='black', highlightbackground='#003478',command=lambda: [fileUpdate(), tabLayout()])
+btn0 = tk.Button(text='Start', width=10, fg='black', highlightbackground='#003478',command=lambda: [fileUpdate(), tabLayout(), getFiles()])
 btn0.place(relx=0.5, rely=0.5, anchor='center')
 
 # start another thread for fileWatch, set to daemon so that it stops when the window closes
