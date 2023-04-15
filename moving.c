@@ -14,16 +14,16 @@ typedef enum { false, true } bool;
 
 //prototype
 void check_or_create_dir(const char* dir_path);
-void create_list_apps();
+void create_list_apps(char* clear_opt);
 int is_file_empty(const char *filename);
-void compare_files(char *file1, char *file2, char *output_file);
+void compare_files(char *file1, char *file2, char *output_file,char* clear_opt);
 void staging_files(char* arg1,char* arg2);
 // void attachment_files();
 // void print_Asterisks();
 void userInput(char* arg1, char* arg2);
 // void menu_option();
 void kill_process();
-
+void replace_file(char *file1, char *file2);
 
 
 
@@ -36,7 +36,7 @@ void check_or_create_dir(const char* dir_path) {
     }
 }
 
-void create_list_apps(){
+void create_list_apps(char* clear_opt){
     FILE *fp_old, *fp_new, *fp_diff;
     fp_old = fopen("/sdcard/exe_files/old_list.txt", "r");
     if (fp_old == NULL)
@@ -54,7 +54,7 @@ void create_list_apps(){
     char *old_file = strdup(OLD_FILE);
     char *diff_file = strdup(DIFF_FILE);
 
-    compare_files(new_file, old_file, diff_file);
+    compare_files(new_file, old_file, diff_file,clear_opt);
     // compare_files(strdup(NEW_FILE),strdup(OLD_FILE),strdup(DIFF_FILE));
 
     // int check = is_file_empty(DIFF_FILE);
@@ -78,7 +78,7 @@ int is_file_empty(const char *file_path) {
     return st.st_size == 0;
 }
 
-void compare_files(char *file1, char *file2, char *output_file) {
+void compare_files(char *file1, char *file2, char *output_file,char* clear_opt) {
     FILE *fp1, *fp2, *fout;
     char line1[1024], line2[1024];
     int line_num = 0;
@@ -96,10 +96,32 @@ void compare_files(char *file1, char *file2, char *output_file) {
     }
 
     // open the output file
-    fout = fopen(output_file, "w");
-    if (fout == NULL) {
-        printf("Error creating file %s\n", output_file);
+    if (strcmp(clear_opt, "y") == 0) {
+        fout = fopen(output_file, "w");
+        if (fout == NULL) {
+            printf("Error creating file %s\n", output_file);
+        }
+    } else {
+        fout = fopen(output_file, "a");
+        if (fout == NULL) {
+            printf("Error opening file %s\n", output_file);
+        }
     }
+
+    // // check if the contents of file1 and file2 are the same
+    // bool same_contents = true;
+    // while (fgets(line1, sizeof(line1), fp1) != NULL) {
+    //     fgets(line2, sizeof(line2), fp2);
+    //     if (strcmp(line1, line2) != 0) {
+    //         same_contents = false;
+    //         break;
+    //     }
+    // }
+
+    // // if the contents are the same, set fout to an empty file
+    // if (same_contents && strcmp(clear_opt, "y") == 0) {
+    //     freopen("/dev/null", "w", fout);
+    // }
 
     // read from file1 and compare with file2
     while (fgets(line1, sizeof(line1), fp1) != NULL) {
@@ -121,12 +143,39 @@ void compare_files(char *file1, char *file2, char *output_file) {
             fprintf(fout, "%s", line1);
         }
     }
+
+    replace_file(file1,file2);
+
     // close the files
     fclose(fp1);
     fclose(fp2);
     fclose(fout);
 }
 
+void replace_file(char *file1, char *file2) {
+    FILE *fp1, *fp2;
+    char line[1024];
+
+    // open the input files
+    fp1 = fopen(file1, "r");
+    if (fp1 == NULL) {
+        printf("Error opening file %s\n", file1);
+    }
+
+    fp2 = fopen(file2, "w");
+    if (fp2 == NULL) {
+        printf("Error creating file %s\n", file2);
+    }
+
+    // read from file1 and write to file2
+    while (fgets(line, sizeof(line), fp1) != NULL) {
+        fprintf(fp2, "%s", line);
+    }
+
+    // close the files
+    fclose(fp1);
+    fclose(fp2);
+}
 
 
 void staging_files(char* arg1,char* arg2) {
@@ -232,7 +281,7 @@ void userInput(char* arg1, char* arg2) {
     // input[strcspn(input, "\n")] = '\0';  // remove newline character
 
     check_or_create_dir(FOLDER);
-    create_list_apps();
+    create_list_apps(arg2);
 
     //Quitting options
     if (strcmp(arg1, "3") == 0 || strcmp(arg1, "q") == 0 || strcmp(arg1, "Q") == 0 || strcmp(arg1, "quit") == 0 || strcmp(arg1, "exit") == 0) {
@@ -240,12 +289,11 @@ void userInput(char* arg1, char* arg2) {
     }else if (strcmp(arg1,"1")==0 || strcmp(arg1,"2")==0) {
         staging_files(arg1,arg2);
     
-    // }else if (strcmp(arg1,"3")==0) {
-    //     check_or_create_dir(FOLDER);
-    //     create_list_apps();
+    }else if (strcmp(arg1,"3")==0) {
+        check_or_create_dir(FOLDER);
+        create_list_apps(arg2);
     // // }else if (strcmp(arg1, "cls") == 0 || strcmp(arg1, "clear") == 0){
     // //     system("clear");
-    // }
     }else {
         // print_Asterisks();
         printf("! Invalid Option !\n");

@@ -2,6 +2,8 @@ import subprocess
 import os
 import shlex
 import time
+import colorama
+from colorama import Fore, Style
 
 #to get the current working directory
 python_directory_path = os.getcwd()
@@ -31,19 +33,19 @@ bckup_path = "/storage/emulated/0/Signal/Backups"
 
 def print_ast():
 	print()
-	print(50 * "*")
+	print(Fore.CYAN  + Style.BRIGHT + 50 * "*"+ Style.RESET_ALL)
 	print()
-
+	# print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
 def check_signal(path_to_dbs):
 	# TODO: Change the hardcoded stuff 
 	cmd = "adb pull {bckup} {desk}/imports/{user_pk}".format(bckup=bckup_path,user_pk=path_to_dbs,desk=desktop_path)
 	subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
-	print("Successfully Imported")
+	print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
 
 def menu_check():
 
-	subprocess.run("mkdir {desk}/imports".format(desk=desktop_path).split())
+	subprocess.run("mkdir {desk}/imports".format(desk=desktop_path).split(),stderr=subprocess.PIPE)
 
 	while True:
 		print_ast()
@@ -52,7 +54,8 @@ def menu_check():
 		print("1 - Export the database files (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
 		print("2 - Export the attachment (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
 		print("3 - View new apps")
-		print("4 - Quit\n")
+		print("4 - Quit")
+		print("5 - Clear screen")
 		print_ast()
 		user_val = str(input("Please enter your option: "))
 
@@ -67,7 +70,7 @@ def menu_check():
 				cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk}/databases {desk}/imports/{user_pk}".format(user_pk=user_path,desk=desktop_path)
 				subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
-				print("Successfully Imported")
+				print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
 			else:
 				check_signal(user_path)
 
@@ -82,9 +85,19 @@ def menu_check():
 			cmd = "adb pull {user_pk} {desk}/imports/".format(user_pk=user_path,desk=desktop_path)
 			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
-			print("Successfully Imported")
+			print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
 
 		elif user_val=="3":
+			while True:
+				user_val2=str(input("Would you like to clear the list of new apps? (y/n): ")).lower()
+				if user_val2=='y' or user_val2=='yes' or user_val2=='n' or user_val2=='no':
+					break
+				else:
+					print(Fore.RED + "INVALID OPTION" + Style.RESET_ALL)
+					print()
+			cmd="adb shell su -c \"{tmp_path}./{exe} {user_opt} {user_opt2}\" /dev/null 2>&1".format(tmp_path=data_lcl_tmp_path,exe=ndk_executable,user_opt=user_val,user_opt2=user_val2)
+			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+
 			cmd="adb pull /sdcard/exe_files/diff.txt {desk}".format(desk=desktop_path)
 			subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
@@ -93,7 +106,7 @@ def menu_check():
 			with open("{desk}/diff.txt".format(desk=desktop_path), "r") as file:
 				# Read the contents of the file and print them
 				contents = file.read()
-				print(contents)
+				print(Fore.GREEN + contents+ Style.RESET_ALL)
 
 		elif user_val=="4":
 			# cmd="adb shell su -c \"killall -9 //data/local/tmp/./copydbF\" 2>/dev/null"
@@ -103,9 +116,12 @@ def menu_check():
 			print_ast()
 			break
 
+		elif user_val=="5" or user_val=="clear" or user_val=="cls":
+			subprocess.run("clear")
+
 		else:
 			print_ast()
-			print("Invalid Input")
+			print(Fore.RED + "INVALID OPTION" + Style.RESET_ALL)
 			print_ast()
 
 def build_push_assign():

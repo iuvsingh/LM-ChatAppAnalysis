@@ -40,7 +40,7 @@ dst = './msgstore.db'  # Destination directory is the current directory
 
 # Copy the file
 # try:
-shutil.copy(src, dst)
+# shutil.copy(src, dst)
 # except:
 # 	print("Error")
 # 	pass
