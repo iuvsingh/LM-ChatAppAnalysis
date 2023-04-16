@@ -10,9 +10,7 @@ if [ -e /home/kali/Desktop/Imports/Signal/database.sqlite ]; then
 EOF
 fi
 
-sqlite3 msgstore.db <<EOF # whatsapp
-.headers on
-.mode csv
-.output whatsAppMessagesDB.csv
-SELECT * FROM message
-EOF
+if [ -e /home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db ]; then
+	sqlite3 "msgstore.db" ".headers on" ".mode csv" ".output whatsAppMessagesDB.csv" "SELECT * FROM message"
+fi
+

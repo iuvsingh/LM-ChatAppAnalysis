@@ -30,18 +30,7 @@ root.title('Access D3niers')
 #set background color
 root['background']='#003478'
 root.geometry('1280x720')
-'''
-######################################################
-src = '/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db'
-dst = './msgstore.db'  # Destination directory is the current directory
 
-# Change current directory to destination directory
-#os.chdir('/path/to/destination/directory')
-
-# Copy the file
-shutil.copy(src, dst)
-'''
-#############################################
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
 
