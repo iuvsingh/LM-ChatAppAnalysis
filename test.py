@@ -72,7 +72,7 @@ def menu_check():
 				print()
 
 				# TODO: Change the hardcoded stuff 
-				cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk}/databases {desk}/imports/{user_pk}".format(user_pk=user_path,desk=desktop_path)
+				cmd = "adb pull /sdcard/dbs_attchmnt/{user_pk} {desk}/imports/{user_pk}".format(user_pk=user_path,desk=desktop_path)
 				subprocess.run(cmd.split(),stdout=subprocess.PIPE)
 
 				print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)

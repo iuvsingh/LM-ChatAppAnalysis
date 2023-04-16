@@ -30,18 +30,7 @@ root.title('Access D3niers')
 #set background color
 root['background']='#003478'
 root.geometry('1280x720')
-'''
-######################################################
-src = '/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db'
-dst = './msgstore.db'  # Destination directory is the current directory
 
-# Change current directory to destination directory
-#os.chdir('/path/to/destination/directory')
-
-# Copy the file
-shutil.copy(src, dst)
-'''
-#############################################
 #defines the notebook widget
 tabControl = ScrollableNotebook(root, wheelscroll=True, tabmenu=True)
 
@@ -143,16 +132,27 @@ def fileUpdate():
 
                 
 def getFiles():
-    try:
-    	srcFileLst = ["/home/usingh2/Desktop/imports/com.whatsapp/databases/msgstore.db"] 
-    	dstFileLst = ["./msgstore.db"]
-    	for i in range(len(srcFileLst)):
-    		if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
-    			shutil.copy2(srcFileLst[i], dstFileLst[i])
-    		else:
-    			return None
-    except:
-        pass	
+    # try:
+    srcFileLst = ["/home/usingh2/Desktop/imports/com.whatsapp/databases/msgstore.db", 
+    "/home/usingh2/Desktop/imports/com.nandbox.nandbox/databases/courgette.db",
+    "/home/usingh2/Desktop/imports/com.microsoft.teams/databases/SkypeTeams.db",
+    "/home/usingh2/Desktop/imports/kik.android/databases/51c54d5d-cfda-4355-8ac2-9470dcecd5b2.kikDatabase.db",
+    "/home/usingh2/Desktop/imports/com.wire/databases/af7b1f93-b00c-433f-93da-ac19cbebd308",
+    "/home/usingh2/Desktop/imports/com.skype.raider/databases/s4l-live:.cid.3e619d490d75ed0c.db"]
+     
+    dstFileLst = ["./msgstore.db",
+    "./courgette.db",
+    "./SkypeTeams.db",
+    "./kikDatabase.db",
+    "./wire.db",
+    "./skype.db"]
+
+    for i in range(len(srcFileLst)):
+        if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
+            print(srcFileLst[i],dstFileLst[i])
+            shutil.copy2(srcFileLst[i], dstFileLst[i])
+    # except:
+    #     pass
 
 class Event(LoggingEventHandler):
     def dispatch(self, event):
@@ -193,6 +193,7 @@ def fileWatch():
         observer.stop()
     observer.join()
     #sys.stdout = sys.__stdout__
+
 def file_pull():
     os.system('x-terminal-emulator -e "python3 -u test.py; read" &')
 
