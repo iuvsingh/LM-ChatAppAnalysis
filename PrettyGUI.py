@@ -1,4 +1,3 @@
-import os
 import os.path
 import subprocess	
 import time
@@ -23,6 +22,16 @@ import csv
 import shutil
 
 
+
+#Name of the current user
+cmd=subprocess.run("whoami",stdout=subprocess.PIPE)
+user_name=cmd.stdout.decode("utf-8").strip()
+
+#Change the following as necessary
+desktop_path="/home/{user}/Desktop".format(user=user_name)
+
+#import directory path
+import_path=desktop_path+"/imports"
 
 #defines the window
 root = tk.Tk()
@@ -132,27 +141,30 @@ def fileUpdate():
 
                 
 def getFiles():
-    # try:
-    srcFileLst = ["/home/usingh2/Desktop/imports/com.whatsapp/databases/msgstore.db", 
-    "/home/usingh2/Desktop/imports/com.nandbox.nandbox/databases/courgette.db",
-    "/home/usingh2/Desktop/imports/com.microsoft.teams/databases/SkypeTeams.db",
-    "/home/usingh2/Desktop/imports/kik.android/databases/51c54d5d-cfda-4355-8ac2-9470dcecd5b2.kikDatabase.db",
-    "/home/usingh2/Desktop/imports/com.wire/databases/af7b1f93-b00c-433f-93da-ac19cbebd308",
-    "/home/usingh2/Desktop/imports/com.skype.raider/databases/s4l-live:.cid.3e619d490d75ed0c.db"]
-     
-    dstFileLst = ["./msgstore.db",
-    "./courgette.db",
-    "./SkypeTeams.db",
-    "./kikDatabase.db",
-    "./wire.db",
-    "./skype.db"]
+    try:
+        srcFileLst = ["{desk_p}/com.whatsapp/databases/msgstore.db".format(desk_p=import_path), 
+        "{desk_p}/com.nandbox.nandbox/databases/courgette.db".format(desk_p=import_path),
+        "{desk_p}/com.microsoft.teams/databases/SkypeTeams.db".format(desk_p=import_path),
+        "{desk_p}/kik.android/databases/51c54d5d-cfda-4355-8ac2-9470dcecd5b2.kikDatabase.db".format(desk_p=import_path),
+        "{desk_p}/com.wire/databases/af7b1f93-b00c-433f-93da-ac19cbebd308".format(desk_p=import_path),
+        "{desk_p}/com.skype.raider/databases/s4l-live:.cid.3e619d490d75ed0c.db".format(desk_p=import_path)]
+         
+        dstFileLst = ["./msgstore.db",
+        "./courgette.db",
+        "./SkypeTeams.db",
+        "./kikDatabase.db",
+        "./wire.db",
+        "./skype.db"]
 
-    for i in range(len(srcFileLst)):
-        if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
-            print(srcFileLst[i],dstFileLst[i])
-            shutil.copy2(srcFileLst[i], dstFileLst[i])
-    # except:
-    #     pass
+        for i in range(len(srcFileLst)):
+            try:
+                if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
+                    print(srcFileLst[i],dstFileLst[i])
+                    shutil.copy2(srcFileLst[i], dstFileLst[i])
+            except:
+                pass
+    except:
+        pass
 
 class Event(LoggingEventHandler):
     def dispatch(self, event):
@@ -169,7 +181,7 @@ def fileWatch():
                         datefmt='%Y-%m-%d %H:%M:%S')
     # set format for displaying path
     path = os.getcwd()
-    path2 = "/home/usingh2/Desktop/imports"
+    path2 = import_path
    # with open('watchdogOuput.txt', 'w') as f:
     #    sys.stdout = f# initialize logging event
     event_handler = Event()
