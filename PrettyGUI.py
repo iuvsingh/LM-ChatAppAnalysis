@@ -132,8 +132,19 @@ def fileUpdate():
 
                 
 def getFiles():
-	srcFileLst = ["/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db"] 
-	dstFileLst = ["./msgstore.db"]
+	srcFileLst = ["/home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db", 
+	"/home/kali/Desktop/Imports/org.telegram.messenger/files/cache4.db", 
+	"home/kali/Desktop/Imports/databases/com.nandbox.nandbox/courgette.db",
+	"/home/kali/Desktop/Imports/com.microsoft.teams/databases/SkypeTeams.db",
+	"/home/kali/Desktop/Imports/kik.android/databases/51c54d5d-cfda-4355-8ac2-9470dcecd5b2.kikDatabase.db"
+	"/home/kali/Desktop/Imports/com.wire/databases/af7b1f93-b00c-433f-93da-ac19cbebd308.db"]
+	 
+	dstFileLst = ["./msgstore.db",
+	"./cache4.db",
+	"./courgette.db",
+	"./SkypeTeams.db",
+	"./kikDatabase.db",
+	"./wire.db"]
 	for i in range(len(srcFileLst)):
 		if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
 			shutil.copy2(srcFileLst[i], dstFileLst[i])
