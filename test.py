@@ -30,33 +30,38 @@ sd_card_path="/sdcard"
 #Backup path on android for signal
 bckup_path = "/storage/emulated/0/Signal/Backups"
 
+def menu_options():
+	print_ast()
+	print("WELCOME\n")
+	print("Select an option below")
+	print("1 - Export the database files (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
+	print("2 - Export the attachment (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
+	print("3 - View new apps")
+	print("4 - Quit")
+	print("5 - Clear screen")
+	print_ast()
 
 def print_ast():
 	print()
 	print(Fore.CYAN  + Style.BRIGHT + 50 * "*"+ Style.RESET_ALL)
 	print()
 	# print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
+
+
 def check_signal(path_to_dbs):
 	# TODO: Change the hardcoded stuff 
 	cmd = "adb pull {bckup} {desk}/imports/{user_pk}".format(bckup=bckup_path,user_pk=path_to_dbs,desk=desktop_path)
 	subprocess.run(cmd.split(),stdout=subprocess.PIPE)
-
 	print(Fore.GREEN + "Successfully Imported"+ Style.RESET_ALL)
+
 
 def menu_check():
 
-	subprocess.run("mkdir {desk}/imports".format(desk=desktop_path).split(),stderr=subprocess.PIPE)
-
 	while True:
-		print_ast()
-		print("WELCOME\n")
-		print("Select an option below")
-		print("1 - Export the database files (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
-		print("2 - Export the attachment (NOTE: ALL FIlES WILL BE IMPORTED ON DESKTOP)")
-		print("3 - View new apps")
-		print("4 - Quit")
-		print("5 - Clear screen")
-		print_ast()
+		subprocess.run("mkdir {desk}/imports".format(desk=desktop_path).split(),stderr=subprocess.PIPE)
+
+		menu_options()
+
 		user_val = str(input("Please enter your option: "))
 
 		if user_val=="1":

@@ -177,16 +177,22 @@ def csvDisplay(filepath, tab):
 def fileUpdate():
     # set path as current directory
     path = os.getcwd()
-    # path = "/home/usingh_desk/Desktop/imports/"
     # os.chdir('./ScriptFiles')
 
-    # iterate through each file in the directory
-    for entry in os.scandir(path):
-        if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')) or entry.name == "signalBackup":#'.db', 
-            # sleep timer for databases to load and convert
-            time.sleep(.1)
-            # adds the file to the set
-            uploadedFiles.add(entry.name)
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')) or file == "signalBackup":#'.db',
+                # sleep timer for databases to load and convert
+                time.sleep(.1)
+                # adds the file to the set
+                uploadedFiles.add(file)
+    # # iterate through each file in the directory
+    # for entry in os.scandir(path):
+    #     if entry.path.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db','.csv')) or entry.name == "signalBackup":#'.db', 
+    #         # sleep timer for databases to load and convert
+    #         time.sleep(.1)
+    #         # adds the file to the set
+    #         uploadedFiles.add(entry.name)
 
 # what fileWatch calls to update the tabs
 
