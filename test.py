@@ -155,6 +155,9 @@ def build_push_assign():
 
 
 def main():
+	cmd = "adb start-server"
+	subprocess.run(cmd.split(),stdout=subprocess.PIPE)
+	
 	build_push_assign()
 	menu_check()
 
