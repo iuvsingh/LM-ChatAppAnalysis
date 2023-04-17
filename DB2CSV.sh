@@ -10,8 +10,12 @@ if [ -e /home/kali/Desktop/Imports/Signal/database.sqlite ]; then
 EOF
 fi
 
-if [ -e /home/kali/Desktop/Imports/com.whatsapp/databases/msgstore.db ]; then #whatsapp
+if [ -f msgstore.db ]; then #whatsapp
 	sqlite3 "msgstore.db" ".headers on" ".mode csv" ".output whatsAppMessagesDB.csv" "SELECT * FROM message"
+fi
+
+if [ -f wa.db ]; then #whatsapp
+	sqlite3 "wa.db" ".headers on" ".mode csv" ".output whatsAppContactsDB.csv" "SELECT * FROM wa_contacts"
 fi
 
 if [ -e /home/kali/Desktop/Imports/org.telegram.messenger/files/cache4.db ]; then # telegram 
