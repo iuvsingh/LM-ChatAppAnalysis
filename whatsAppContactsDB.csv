@@ -1,3 +1,0 @@
-_id,jid,is_whatsapp_user,status,status_timestamp,number,raw_contact_id,display_name,phone_type,phone_label,unseen_msg_count,photo_ts,thumb_ts,photo_id_timestamp,given_name,family_name,wa_name,sort_name,nickname,company,title,status_autodownload_disabled,keep_timestamp,is_spam_reported,is_sidelist_synced,is_business_synced,disappearing_mode_duration,disappearing_mode_timestamp,history_sync_initial_phash
-2,17038553480@s.whatsapp.net,1,"Hey there! I am using WhatsApp.",1645609216000,+17038553480,42,Test,2,,,-1,-1,1680360470041,Test,,"Sruthi  Chavali",Test,,,,,,0,0,1,86400,1680119414,
-3,status@broadcast,1,,0,,,,,,,,,,,,,,,,,,,,0,0,,,
