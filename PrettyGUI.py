@@ -1,3 +1,4 @@
+#all of the imports to create and execute funcionality within the GUI
 import os.path
 import subprocess   
 import time
@@ -56,7 +57,7 @@ def tabLayout():
     #for each file in ordered uploads
     for name in orderedUploads:
         print(name)
-        #if txt file
+        #checking if the filename ends with any of the following extensions
         if name.lower().endswith(('.txt', '.png', '.jpg', 'jpeg', '.db', '.csv')):#'.db',
             if name not in previousUploads:
                 #add name to used list
@@ -75,15 +76,16 @@ def tabLayout():
                         #inserts data into the content window
                         content.insert(tk.END, data)
                     tab_name = name
-
+                #checking if the extension indicates that it is a database file
                 elif name.lower().endswith('.db') or name.lower().endswith('.sqlite'):
+                    #executes to database to csv file conversion bash script
                     os.system("./DB2CSV.sh")
                     continue
-                #     tab_name = name
-                #     read_from_db(name,tab, tab_name)
-                    #tab_name = name
+
+               #checking if the extension is .csv
                 elif name.lower().endswith('.csv'):
                     tab_name = name
+                    #calls the csvDisplay function to display csv format in the GUI
                     csvDisplay(name, tab)
                 else:
                     # open the picture to resize
@@ -114,7 +116,6 @@ previousUploads = set()
 
 #display the csv
 def csvDisplay(filepath, tab):
-    # os.system("./csv.sh")
     #sets the table
     table = Table(tab, showstatusbar=True, showtoolbar=True)
 
@@ -139,9 +140,10 @@ def fileUpdate():
             # adds the file to the set
             uploadedFiles.add(entry.name)
 
-                
+#getting the database files from the imported chat application database folders                
 def getFiles():
     try:
+        #list of database files to copy to current directory
         srcFileLst = ["{desk_p}/com.whatsapp/databases/msgstore.db".format(desk_p=import_path), 
         "{desk_p}/com.nandbox.nandbox/databases/courgette.db".format(desk_p=import_path),
         "{desk_p}/com.microsoft.teams/databases/SkypeTeams.db".format(desk_p=import_path),
@@ -149,6 +151,7 @@ def getFiles():
         "{desk_p}/com.wire/databases/af7b1f93-b00c-433f-93da-ac19cbebd308".format(desk_p=import_path),
         "{desk_p}/com.skype.raider/databases/s4l-live:.cid.3e619d490d75ed0c.db".format(desk_p=import_path)]
          
+        #list of filenames corresponding to the database files in srcFileLst
         dstFileLst = ["./msgstore.db",
         "./courgette.db",
         "./SkypeTeams.db",
@@ -156,10 +159,14 @@ def getFiles():
         "./wire.db",
         "./skype.db"]
 
+        #for each index in srcFileLst
         for i in range(len(srcFileLst)):
             try:
-                if os.path.isfile(srcFileLst[i]):#srcFileLst[i]:
+
+                #if the file exists 
+                if os.path.isfile(srcFileLst[i]):
                     print(srcFileLst[i],dstFileLst[i])
+                    #copy the file into the destination filename so it can reside in the current directory
                     shutil.copy2(srcFileLst[i], dstFileLst[i])
             except:
                 pass
@@ -167,6 +174,7 @@ def getFiles():
         pass
 
 class Event(LoggingEventHandler):
+    #executes this functions when dispatch() is called
     def dispatch(self, event):
         fileUpdate()
         getFiles()
@@ -191,7 +199,9 @@ def fileWatch():
 
     # initialize Observer
     observer = Observer()
+    #observing current directory (path)
     observer.schedule(event_handler, path, recursive=True)
+    #observing the directory which the chat application databases are in
     observer.schedule(event_handler, path2, recursive=True)
     observer.schedule(event_log, path, recursive=True)
 
@@ -204,11 +214,11 @@ def fileWatch():
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
-    #sys.stdout = sys.__stdout__
 
 def file_pull():
     os.system('x-terminal-emulator -e "python3 -u test.py; read" &')
 
+#button to pull the database files by executing test.py
 B=tkinter.Button(root,text="Pull Database",command= file_pull)
 B.place(x=25, y=3000)
 B.pack()
