@@ -3,8 +3,9 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <unistd.h> // for chdir()
+#include <unistd.h> 
 
+//creating variables for files
 const char* OLD_FILE = "/sdcard/exe_files/old_list.txt";
 const char* NEW_FILE = "/sdcard/exe_files/new_list.txt";
 const char* DIFF_FILE = "/sdcard/exe_files/diff.txt";
@@ -18,10 +19,7 @@ void create_list_apps(char* clear_opt);
 int is_file_empty(const char *filename);
 void compare_files(char *file1, char *file2, char *output_file,char* clear_opt);
 void staging_files(char* arg1,char* arg2);
-// void attachment_files();
-// void print_Asterisks();
 void userInput(char* arg1, char* arg2);
-// void menu_option();
 void kill_process();
 void replace_file(char *file1, char *file2);
 
@@ -36,40 +34,38 @@ void check_or_create_dir(const char* dir_path) {
     }
 }
 
+//creates list of new apps
 void create_list_apps(char* clear_opt){
     FILE *fp_old, *fp_new, *fp_diff;
     fp_old = fopen("/sdcard/exe_files/old_list.txt", "r");
+    //if the old_lists.txt file does not exist
     if (fp_old == NULL)
     {
+        //creates old_lists.txt by redirecting ls output to file
         system("ls /data/data > /sdcard/exe_files/old_list.txt");
         printf("New file created successfully!\n");
-        // fclose(fp);
-        // return;
+      
     }
-    // printf("File already exists!\n");
+    //if old_lists.txt does exist, new_list.txt file is created 
     system("ls /data/data > /sdcard/exe_files/new_list.txt");
+    //creates a diff.txt file
     system("touch /sdcard/exe_files/diff.txt");
 
     char *new_file = strdup(NEW_FILE);
     char *old_file = strdup(OLD_FILE);
     char *diff_file = strdup(DIFF_FILE);
 
+    //compares the new and old text file and outputs to difference into the diff_file
     compare_files(new_file, old_file, diff_file,clear_opt);
-    // compare_files(strdup(NEW_FILE),strdup(OLD_FILE),strdup(DIFF_FILE));
-
-    // int check = is_file_empty(DIFF_FILE);
-    // if (check==0){
-    //     // print_Asterisks();
-    //     printf("Following are the new packages discovered:\n\n");
-    //     system("cat /sdcard/exe_files/diff.txt");
-    // }
-
+    
+    //free the space in these files
     free(new_file);
     free(old_file);
     free(diff_file);
 
 }
 
+//checks if file at given path is empty or not and returns the 0 if not empty
 int is_file_empty(const char *file_path) {
     struct stat st;
     if (stat(file_path, &st) != 0) {
@@ -78,6 +74,7 @@ int is_file_empty(const char *file_path) {
     return st.st_size == 0;
 }
 
+//function to compare the files 
 void compare_files(char *file1, char *file2, char *output_file,char* clear_opt) {
     FILE *fp1, *fp2, *fout;
     char line1[1024], line2[1024];
@@ -108,21 +105,7 @@ void compare_files(char *file1, char *file2, char *output_file,char* clear_opt) 
         }
     }
 
-    // // check if the contents of file1 and file2 are the same
-    // bool same_contents = true;
-    // while (fgets(line1, sizeof(line1), fp1) != NULL) {
-    //     fgets(line2, sizeof(line2), fp2);
-    //     if (strcmp(line1, line2) != 0) {
-    //         same_contents = false;
-    //         break;
-    //     }
-    // }
-
-    // // if the contents are the same, set fout to an empty file
-    // if (same_contents && strcmp(clear_opt, "y") == 0) {
-    //     freopen("/dev/null", "w", fout);
-    // }
-
+    
     // read from file1 and compare with file2
     while (fgets(line1, sizeof(line1), fp1) != NULL) {
         change_detected = false;
@@ -178,34 +161,31 @@ void replace_file(char *file1, char *file2) {
 }
 
 
+//function for staging files
 void staging_files(char* arg1,char* arg2) {
     char input[100];
     char command[200] = "cp -avr ";
     char end_command[50] = " /sdcard/dbs_attchmnt";
-
+    //if the user input option is 1
     if (strcmp(arg1, "1") == 0) {
-        // printf("Enter the application package name: ");
-        // fgets(input, 100, stdin);
-        // input[strcspn(input, "\n")] = '\0'; 
+        
 
         check_or_create_dir("/sdcard/dbs_attchmnt");
-
+        //copies the file path of the package specified by the user input into the end_command directory
         strcat(command, "/data/data/");
         strcat(command, arg2);
         strcat(command, end_command);
         // printf("%s\n",command);
         system(command);
     }
+    //if the user input option is 2
     else if (strcmp(arg1, "2") == 0) {
-        // printf("Enter the path to attachment (include the \'/\'): ");
-        // fgets(input, 100, stdin);
-        // input[strcspn(input, "\n")] = '\0'; 
+       
 
-        check_or_create_dir("/sdcard/dbs_attchmnt");
-
+        check_or_create_dir("/sdcard/dbs_attchmnt"); 
+        //copies the file path of the attachment into the end_command directory 
         strcat(command, arg2);
         strcat(command, end_command);
-        // printf("%s\n",command);
         system(command);
     }
     else {
@@ -215,59 +195,6 @@ void staging_files(char* arg1,char* arg2) {
 
 
 
-// void staging_files(char* arg1){
-//     char input[100];
-//     char command[100] = "cp -avr /data/data/";
-//     char end_command[50] = " /sdcard/";
-
-//     // printf("Enter the application package name: ");
-//     // fgets(input, 100, stdin);
-//     // input[strcspn(input, "\n")] = '\0'; 
-
-//     strcat(command, arg1);
-//     strcat(command, end_command);
-//     // printf("%s\n\n",command);
-//     system(command);
-// }
-
-// void attachment_files(char* arg1){
-//     char input[100];
-//     char command[100] = "cp -avr ";
-//     char end_command[50] = " /sdcard/";
-
-//     // printf("Enter the path to attachment (include the \'/\'): ");
-//     // fgets(input, 100, stdin);
-//     // input[strcspn(input, "\n")] = '\0'; 
-
-//     strcat(command, arg1);
-//     strcat(command, end_command);
-//     // printf("%s\n\n",command);
-//     system(command);
-// }
-
-// //Print asteriks to create menu
-// void print_Asterisks() {
-//     int i;
-
-//     for (i = 0; i < 50; i++) {
-//         printf("*");
-//     }
-
-//     printf("\n");
-// }
-
-// //Create menu
-// void menu_option(){
-//     print_Asterisks();
-//     printf("WELCOME\n\n");
-//     printf("Select an option below\n\n");
-//     printf("1 - Export the database files\n");
-//     printf("2 - Export the attachment\n");
-//     printf("3 - View new apps\n");
-//     printf("4 - Quit\n\n");
-//     print_Asterisks();
-//     printf("Please enter your option: ");
-// }
 
 
 //Ask for user input
@@ -276,9 +203,6 @@ void userInput(char* arg1, char* arg2) {
     int quit = 0;
 
 
-    // menu_option();
-    // fgets(input, sizeof(input), stdin);
-    // input[strcspn(input, "\n")] = '\0';  // remove newline character
 
     check_or_create_dir(FOLDER);
     create_list_apps(arg2);
@@ -286,28 +210,26 @@ void userInput(char* arg1, char* arg2) {
     //Quitting options
     if (strcmp(arg1, "3") == 0 || strcmp(arg1, "q") == 0 || strcmp(arg1, "Q") == 0 || strcmp(arg1, "quit") == 0 || strcmp(arg1, "exit") == 0) {
         quit = 1;
+    //Staging options
     }else if (strcmp(arg1,"1")==0 || strcmp(arg1,"2")==0) {
         staging_files(arg1,arg2);
-    
+    //Create diff.txt list
     }else if (strcmp(arg1,"3")==0) {
         check_or_create_dir(FOLDER);
         create_list_apps(arg2);
-    // // }else if (strcmp(arg1, "cls") == 0 || strcmp(arg1, "clear") == 0){
-    // //     system("clear");
+   
     }else {
         // print_Asterisks();
         printf("! Invalid Option !\n");
     }
     
     kill_process();
-    // printf("Exiting...\n");
 }
 
+//end ndk executable process
 void kill_process(){
     char kill_copydbf[150]="killall -9 //data/local/tmp/./copydbF 2>/dev/null";
-    // char kill_perm[100]="killall -9 /data/local/tmp/./permissions";
-
-    // system(kill_perm);
+ 
     system(kill_copydbf);
 
 }
